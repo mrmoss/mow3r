@@ -3,6 +3,8 @@
 #include <msl/serial.hpp>
 #include <msl/time.hpp>
 #include <stdexcept>
+#include <sstream>
+#include <string>
 
 network_t network;
 
@@ -15,20 +17,38 @@ int main()
 			throw std::runtime_error("Error creating outbound backend connection.");
 		if(status==network_t::BAD_BIND)
 			throw std::runtime_error("Error creating inbound backend connection.");
-		std::cout<<" Backend started."<<std::endl;
+		{
+			std::ostringstream ostr;
+			ostr<<"Backend started."<<std::endl;
+			std::cout<<ostr.str()<<std::flush;
+			network.send(ostr.str());
+		}
 		while(true)
 		{
 			auto serials=msl::serial_t::list();
+			bool found=false;
 			for(auto ii:serials)
 			{
 				if(ii.find("Bluetooth")==std::string::npos)
 				{
-					msl::serial_t serial(ii,57600);
+					found=true;
+					msl::serial_t serial(ii,115200);
 					serial.open();
+					msl::delay_ms(2000);
 					if(!serial.good())
-						std::cout<<"Error opening serial on \""<<ii<<"\"."<<std::endl;
+					{
+						std::ostringstream ostr;
+						ostr<<"Error opening serial on \""<<ii<<"\"."<<std::endl;
+						std::cout<<ostr.str()<<std::flush;
+						network.send(ostr.str());
+					}
 					else
-						std::cout<<"Serial opened on \""<<ii<<"\"."<<std::endl;
+					{
+						std::ostringstream ostr;
+						ostr<<"Serial opened on \""<<ii<<"\"."<<std::endl;
+						std::cout<<ostr.str()<<std::flush;
+						network.send(ostr.str());
+					}
 					while(serial.good())
 					{
 						char temp;
@@ -37,12 +57,29 @@ int main()
 							serial_data+=temp;
 						network.send(serial_data);
 						network.poll();
+						std::string recv_data(network.recv());
+						if(recv_data.size()>0)
+							serial.write(recv_data);
 					}
-					std::cout<<"Serial disconnected."<<std::endl;
+					std::ostringstream ostr;
+					ostr<<"Serial disconnected."<<std::endl;
+					std::cout<<ostr.str()<<std::flush;
+					network.send(ostr.str());
+					break;
 				}
 			}
-			msl::delay_ms(10);
-			network.poll();
+			if(!found)
+			{
+				std::ostringstream ostr;
+				ostr<<"No suitable serial ports found."<<std::endl;
+				std::cout<<ostr.str()<<std::flush;
+				network.send(ostr.str());
+			}
+			for(size_t ii=0;ii<100;++ii)
+			{
+				network.poll();
+				msl::delay_ms(10);
+			}
 		}
 		network.free();
 	}

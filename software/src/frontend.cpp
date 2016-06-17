@@ -1,3 +1,4 @@
+#include "../../firmware/packet.hpp"
 #include "network.hpp"
 #include <iostream>
 #include <msl/serial.hpp>
@@ -5,6 +6,7 @@
 #include <stdexcept>
 
 network_t network;
+cmd_t cmd{0,0};
 
 int main()
 {
@@ -20,8 +22,16 @@ int main()
 		{
 			network.poll();
 			auto data=network.recv();
-			if(data.size()>0)
-				std::cout<<"RX: "<<data.size()<<std::endl;
+			std::cout<<data<<std::flush;
+			cmd.L++;
+			if(cmd.L>255)
+			{
+				cmd.R+=1;
+				cmd.L=0;
+			}
+			if(cmd.R>255)
+				cmd.R=0;
+			network.send(send_cmd(cmd));
 			msl::delay_ms(10);
 		}
 		network.free();
