@@ -7,6 +7,8 @@ class motor_t
         motor_t(const uint8_t dir_pin,const uint8_t pwm_pin):
             dir_pin_m(dir_pin),pwm_pin_m(pwm_pin),forward_m(HIGH)
         {
+            pinMode(dir_pin_m,OUTPUT);
+            pinMode(pwm_pin_m,OUTPUT);
             stop();
         }
 
@@ -22,7 +24,10 @@ class motor_t
 
         void drive(const uint8_t speed,const bool dir)
         {
-            digitalWrite(dir_pin_m,((forward_m&&speed>=0)||(!forward_m&&!speed>=0)));
+            bool forward=forward_m;
+            if(!dir)
+                forward=!forward;
+            digitalWrite(dir_pin_m,forward);
             analogWrite(pwm_pin_m,speed);
         }
 
