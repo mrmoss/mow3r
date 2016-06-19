@@ -1,0 +1,36 @@
+{
+	"name":"mow3r",
+	"short_name":"mow3r",
+	"description":"Mowing client.",
+	"version":"2016.6.18.0",
+	"manifest_version":2,
+	"sockets":
+	{
+		"udp":
+		{
+			"send":["*"],
+			"bind":["*"],
+			"multicastMembership":""
+		}
+	},
+	"app":
+	{
+		"background":
+		{
+			"scripts":
+			[
+				"js/background.js",
+				"js/cryptojs/hmac-sha256.js",
+				"js/gui.js",
+				"js/joy.js",
+				"js/network.js",
+				"js/window.js"
+			]
+		}
+	},
+	"icons":
+	{
+		"16":"images/moose-16.png",
+		"128":"images/moose-128.png"
+	}
+}
