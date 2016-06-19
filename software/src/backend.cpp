@@ -1,6 +1,7 @@
 #include "../../firmware/packet.hpp"
 #include "json.hpp"
 #include "network.hpp"
+#include <cstdint>
 #include <iostream>
 #include <msl/serial.hpp>
 #include <msl/time.hpp>
@@ -9,8 +10,43 @@
 
 void recv_cb(std::string data,bool auth);
 network_t network("udp://224.0.0.1:8081","udp://:8080","auth123",recv_cb);
-packet_cmd_t cmd{0,0,0};
+packet_cmd_t cmd;
 packet_parser_t packet_parser;
+std::int64_t deadman_timeout=1000;
+std::int64_t deadman_timer=msl::millis()+deadman_timeout;
+
+void stop()
+{
+	cmd.L=cmd.R=cmd.flags=0;
+}
+
+bool is_stopped()
+{
+	return (cmd.L==cmd.R==cmd.flags==0);
+}
+
+void network_print(const std::string& str)
+{
+	network.send(str);
+	std::cout<<str<<std::endl;
+}
+
+void network_update()
+{
+	network.poll();
+	if(msl::millis()>deadman_timer&&!is_stopped())
+	{
+		stop();
+		deadman_timer=msl::millis()+deadman_timeout;
+		network_print("Stopping.");
+	}
+}
+
+void network_delay(const size_t millis)
+{
+	for(size_t ii=0;ii<millis/10;++ii)
+		network_update();
+}
 
 void recv_cb(std::string data,bool auth)
 {
@@ -21,6 +57,7 @@ void recv_cb(std::string data,bool auth)
 			json_t json(deserialize(data));
 			cmd.L=json["L"].asInt();
 			cmd.R=json["R"].asInt();
+			deadman_timer=msl::millis()+deadman_timeout;
 			std::cout<<"Data: "<<cmd.L<<","<<cmd.R<<std::endl;
 		}
 		catch(...)
@@ -34,22 +71,11 @@ void recv_cb(std::string data,bool auth)
 	}
 }
 
-void network_print(const std::string& str)
-{
-	network.send(str);
-	std::cout<<str<<std::endl;
-}
-
-void network_delay(const size_t millis)
-{
-	for(size_t ii=0;ii<millis/10;++ii)
-		network.poll();
-}
-
 int main()
 {
 	try
 	{
+		stop();
 		network_t::status_t status(network.init());
 		if(status==network_t::BAD_CONNECT)
 			throw std::runtime_error("Error creating outbound frontend connection.");
@@ -79,7 +105,7 @@ int main()
 					}
 					while(serial.good())
 					{
-						network.poll();
+						network_update();
 						char temp;
 						while(serial.available()>0&&serial.read(&temp,1)==1)
 							if(packet_parser.parse(temp))

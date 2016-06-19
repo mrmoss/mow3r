@@ -20,7 +20,7 @@ function gui_t(div)
 		});
 	this.ui={};
 
-	this.ui.joy=new joy_t(this.el,function(power){_this.pilot(power);});
+	this.ui.joy=new joy_t(this.el);
 
 	this.ui.log=document.createElement("textarea");
 	this.el.appendChild(this.ui.log);
@@ -30,12 +30,19 @@ function gui_t(div)
 	this.ui.log.style.height="200px";
 
 	this.el.appendChild(document.createElement("br"));
+
+	this.power_interval=setInterval(function(){_this.pilot();},50);
 }
 
 gui_t.prototype.destroy=function()
 {
 	if(this.network)
 		this.network.destroy();
+	if(this.power_interval)
+	{
+		clearInterval(this.power_interval);
+		this.power_interval=null;
+	}
 }
 
 gui_t.prototype.log=function(message)
@@ -55,8 +62,8 @@ gui_t.prototype.error=function(error)
 	throw error;
 }
 
-gui_t.prototype.pilot=function(power)
+gui_t.prototype.pilot=function()
 {
-	this.log("Move: "+power.L+" "+power.R);
-	this.network.send(JSON.stringify(power));
+	this.log("Move: "+this.ui.joy.power.L+" "+this.ui.joy.power.R);
+	this.network.send(JSON.stringify(this.ui.joy.power));
 }

@@ -1,4 +1,4 @@
-function joy_t(div,onpower)
+function joy_t(div)
 {
 	if(!div)
 		return null;
@@ -8,13 +8,13 @@ function joy_t(div,onpower)
 	this.div.appendChild(this.el);
 	this.el.style.margin=this.el.style.padding="0px";
 
-	this.onpower=onpower;
 	this.bg_size=380/3;
 	this.hat_size=147/3;
 	this.dragging=false;
 	this.centered=true;
 	this.offset={x:0,y:0};
 	this.last_pos={x:0,y:0};
+	this.power={L:0,R:0};
 
 	this.bg=document.createElement("img");
 	this.el.appendChild(this.bg);
@@ -105,18 +105,15 @@ joy_t.prototype.move=function(x,y)
 	y-=this.bg_size/2;
 	var max_len=this.bg_size/2*0.6;
 	var dir=Math.atan2(-y,x);
-	console.log(dir*180/Math.PI);
 	var max_x=Math.abs(Math.cos(dir)*max_len);
 	var max_y=Math.abs(Math.sin(dir)*max_len);
 	x=this.clamp_mag(x,max_x);
 	y=this.clamp_mag(y,max_y);
 	var pt=Math.floor(x/max_len*100);
 	var pf=Math.floor(-y/max_len*100);
-	var power={L:this.clamp_mag(pf+pt,100),R:this.clamp_mag(pf-pt,100)};
-	if(!this.centered&&power.L==0&&power.R==0)
+	this.power={L:this.clamp_mag(pf+pt,100),R:this.clamp_mag(pf-pt,100)};
+	if(!this.centered&&this.power.L==0&&this.power.R==0)
 		this.centered=true;
-	if(this.onpower)
-		this.onpower(power);
 	this.hat.style.left=(this.bg_size-this.hat_size)/2+this.el.offsetLeft+x+"px";
 	this.hat.style.top=(this.bg_size-this.hat_size)/2+this.el.offsetTop+y+"px";
 }
