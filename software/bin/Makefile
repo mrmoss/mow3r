@@ -18,7 +18,7 @@ endif
 
 all: backend
 
-backend: $(SRC)/backend.cpp $(SRC)/network.cpp $(JSONCPP) $(MONGOOSE) $(MSL)
+backend: $(SRC)/backend.cpp $(SRC)/json.cpp $(SRC)/network.cpp $(JSONCPP) $(MONGOOSE) $(MSL)
 	$(CXX) $(CFLAGS) $(LIB) $^ -o $@
 
 clean:

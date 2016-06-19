@@ -57,6 +57,6 @@ gui_t.prototype.error=function(error)
 
 gui_t.prototype.pilot=function(power)
 {
-	this.log("Move: "+power.x+" "+power.y);
+	this.log("Move: "+power.L+" "+power.R);
 	this.network.send(JSON.stringify(power));
 }

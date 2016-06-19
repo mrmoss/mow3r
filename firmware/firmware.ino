@@ -38,10 +38,10 @@ void loop()
         handle_cmd({0,0,0});
         deadman_timer=millis()+deadman_timeout;
     }
-    uint8_t b;
-    while(Serial.available()>0&&Serial.readBytes((char*)&b,1)==1)
+    uint8_t temp;
+    while(Serial.available()>0&&Serial.readBytes((char*)&temp,1)==1)
     {
-        if(packet_parser.parse(b))
+        if(packet_parser.parse(temp))
         {
             packet_cmd_t cmd;
             if(packet_parser.recv_cmd(cmd))
