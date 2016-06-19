@@ -15,6 +15,11 @@ class relay_t
             digitalWrite(pin_m,!active);
         }
 
+        bool is_active() const
+        {
+            return !digitalRead(pin_m);
+        }
+
     private:
         uint8_t pin_m;
 };

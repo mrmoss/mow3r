@@ -1,4 +1,5 @@
 #include "network.hpp"
+#include "../../firmware/packet.hpp"
 #include <iostream>
 #include <msl/serial.hpp>
 #include <msl/time.hpp>
@@ -7,6 +8,40 @@
 #include <string>
 
 network_t network;
+packet_cmd_t cmd;
+packet_parser_t packet_parser;
+
+bool network_read()
+{
+	network.poll();
+	std::string recv_data(network.recv());
+	bool handled=false;
+	if(recv_data.size()>0)
+		for(auto ii:recv_data)
+			if(packet_parser.parse(ii))
+				handled=(handled||packet_parser.recv_cmd(cmd));
+	return handled;
+}
+
+void network_delay(const size_t millis)
+{
+	for(size_t ii=0;ii<millis/10;++ii)
+	{
+		network_read();
+		msl::delay_ms(10);
+	}
+}
+
+void print(const std::string& str)
+{
+	std::cout<<str<<std::endl;
+	network.send(send_debug(str));
+}
+
+void print(std::ostringstream& ostr)
+{
+	print(ostr.str().c_str());
+}
 
 int main()
 {
@@ -19,9 +54,7 @@ int main()
 			throw std::runtime_error("Error creating inbound backend connection.");
 		{
 			std::ostringstream ostr;
-			ostr<<"Backend started."<<std::endl;
-			std::cout<<ostr.str()<<std::flush;
-			network.send(ostr.str());
+			print("Backend started.");
 		}
 		while(true)
 		{
@@ -34,20 +67,19 @@ int main()
 					found=true;
 					msl::serial_t serial(ii,115200);
 					serial.open();
-					msl::delay_ms(2000);
+					network_delay(2000);
 					if(!serial.good())
 					{
 						std::ostringstream ostr;
-						ostr<<"Error opening serial on \""<<ii<<"\"."<<std::endl;
-						std::cout<<ostr.str()<<std::flush;
-						network.send(ostr.str());
+						ostr<<"Error opening serial on \""<<ii<<"\".";
+						print(ostr);
 					}
 					else
 					{
 						std::ostringstream ostr;
-						ostr<<"Serial opened on \""<<ii<<"\"."<<std::endl;
-						std::cout<<ostr.str()<<std::flush;
-						network.send(ostr.str());
+						ostr<<"Serial opened on \""<<ii<<"\".";
+						print(ostr);
+						serial.write(send_cmd(cmd));
 					}
 					while(serial.good())
 					{
@@ -56,30 +88,21 @@ int main()
 						while(serial.available()>0&&serial.read(&temp,1)==1)
 							serial_data+=temp;
 						network.send(serial_data);
-						network.poll();
-						std::string recv_data(network.recv());
-						if(recv_data.size()>0)
-							serial.write(recv_data);
+						if(network_read())
+							serial.write(send_cmd(cmd));
+						msl::delay_ms(10);
 					}
 					std::ostringstream ostr;
-					ostr<<"Serial disconnected."<<std::endl;
-					std::cout<<ostr.str()<<std::flush;
-					network.send(ostr.str());
+					print("Serial disconnected.");
 					break;
 				}
 			}
 			if(!found)
 			{
 				std::ostringstream ostr;
-				ostr<<"No suitable serial ports found."<<std::endl;
-				std::cout<<ostr.str()<<std::flush;
-				network.send(ostr.str());
+				print("Serial disconnected.");
 			}
-			for(size_t ii=0;ii<100;++ii)
-			{
-				network.poll();
-				msl::delay_ms(10);
-			}
+			network_delay(1000);
 		}
 		network.free();
 	}

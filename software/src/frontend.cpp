@@ -1,12 +1,32 @@
-#include "../../firmware/packet.hpp"
 #include "network.hpp"
+#include "../../firmware/packet.hpp"
 #include <iostream>
 #include <msl/serial.hpp>
 #include <msl/time.hpp>
 #include <stdexcept>
 
 network_t network;
-cmd_t cmd{0,0};
+packet_cmd_t cmd{0,0,0};//FLAG_BLADE_ENABLE};
+packet_parser_t packet_parser;
+
+void network_read()
+{
+	network.poll();
+	std::string recv_data(network.recv());
+	packet_cmd_t cmd;
+	std::string debug;
+	if(recv_data.size()>0)
+		for(auto ii:recv_data)
+		{
+			if(packet_parser.parse(ii))
+			{
+				if(packet_parser.recv_cmd(cmd))
+					continue;
+				if(packet_parser.recv_debug(debug))
+					std::cout<<"Network: "<<debug<<std::endl;
+			}
+		}
+}
 
 int main()
 {
@@ -20,17 +40,16 @@ int main()
 		std::cout<<"Frontend started."<<std::endl;
 		while(true)
 		{
-			network.poll();
-			auto data=network.recv();
-			std::cout<<data<<std::flush;
-			cmd.L++;
-			if(cmd.L>255)
+			network_read();
+			cmd.L=--cmd.R;
+			if(cmd.L<-40)
 			{
-				cmd.R+=1;
-				cmd.L=0;
+				cmd.L=cmd.R=0;
+				/*if(cmd.flags&FLAG_BLADE_SPIN)
+					cmd.flags=FLAG_BLADE_ENABLE;
+				else
+					cmd.flags=FLAG_BLADE_ENABLE|FLAG_BLADE_SPIN;*/
 			}
-			if(cmd.R>255)
-				cmd.R=0;
 			network.send(send_cmd(cmd));
 			msl::delay_ms(10);
 		}
