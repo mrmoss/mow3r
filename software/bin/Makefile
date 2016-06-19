@@ -1,7 +1,7 @@
 SRC=../src
 INC=../include
 CXX=g++
-CFLAGS=-O -std=c++11 -Wall -Wno-unused-result -Wno-deprecated-register -I$(INC)
+CFLAGS=-O -std=c++11 -Wall -Wno-unused-result -I$(INC)
 LIB=-lcrypto
 
 JSONCPP=$(INC)/jsoncpp/json_reader.cpp $(INC)/jsoncpp/json_value.cpp $(INC)/jsoncpp/json_writer.cpp
@@ -13,13 +13,14 @@ ifeq ($(OS),Windows_NT)
 endif
 
 ifeq ($(shell uname),Darwin)
+	CFLAGS+=-Wno-deprecated-register
 	LIB+=-framework IOKit -framework CoreFoundation
 endif
 
 all: backend
 
 backend: $(SRC)/backend.cpp $(SRC)/json.cpp $(SRC)/network.cpp $(JSONCPP) $(MONGOOSE) $(MSL)
-	$(CXX) $(CFLAGS) $(LIB) $^ -o $@
+	$(CXX) $(CFLAGS) $^ $(LIB) -o $@
 
 clean:
 	-rm -rf backend backend.exe

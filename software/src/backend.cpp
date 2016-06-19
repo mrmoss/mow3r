@@ -22,7 +22,7 @@ void stop()
 
 bool is_stopped()
 {
-	return (cmd.L==cmd.R==cmd.flags==0);
+	return (cmd.L==0&&cmd.R==0&&cmd.flags==0);
 }
 
 void network_print(const std::string& str)
