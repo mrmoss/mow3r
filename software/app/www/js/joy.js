@@ -41,8 +41,8 @@ function joy_t(div)
 			event.pageY=event.touches[0].pageY;
 		_this.offset=
 		{
-			x:event.pageX-_this.el.offsetLeft-_this.bg_size/2,
-			y:event.pageY-_this.el.offsetTop-_this.bg_size/2
+			x:event.pageX-_this.bg_size/2,
+			y:event.pageY-_this.bg_size/2
 		};
 		_this.move(event.pageX-_this.offset.x,event.pageY-_this.offset.y);
 	};
@@ -134,5 +134,5 @@ joy_t.prototype.move=function(x,y)
 	if(!this.centered&&this.power.L==0&&this.power.R==0)
 		this.centered=true;
 	this.hat.style.left=(this.bg_size-this.hat_size)/2+this.bg.offsetLeft+x+"px";
-	this.hat.style.top=(this.bg_size-this.hat_size)/2+this.bg.offsetTop+y+"px";
+	this.hat.style.top=(this.bg_size-this.hat_size)/2+this.el.offsetTop+y+"px";
 }
