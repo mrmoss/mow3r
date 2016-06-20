@@ -8,8 +8,8 @@ function joy_t(div)
 	this.div.appendChild(this.el);
 	this.el.style.margin=this.el.style.padding="0px";
 
-	this.bg_size=380/1.5;
-	this.hat_size=147/1.5;
+	this.bg_size=422/1.5;
+	this.hat_size=145/1.5;
 	this.dragging=false;
 	this.centered=true;
 	this.offset={x:0,y:0};

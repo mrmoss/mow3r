@@ -22,19 +22,17 @@
 			</ion-header-bar>
 			<ion-content has-bouncing="false">
 				<div id="content"></div>
-				<div class="list">
-					<a class="item item-icon-right" style="pointer-events:none;">
-						<i id="heartbeat_good" class="icon ion-happy" style="visibility:hidden;color:#11dd77;"></i>
-						<i id="heartbeat_bad" class="icon ion-sad" style="color:red;"></i>
-						Server Connection
-					</a>
-					<a class="item item-icon-right" style="pointer-events:none;">
-						<i id="ardubeat_good" class="icon ion-happy" style="visibility:hidden;color:#11dd77;"></i>
-						<i id="ardubeat_bad" class="icon ion-sad" style="color:red;"></i>
-						Arduino Connection
-					</a>
-				</div>
 				<ul class="list">
+					<li class="item item-icon-right">
+						<i id="heartbeat_good" class="icon ion-checkmark-circled" style="visibility:hidden;color:#11dd77;"></i>
+						<i id="heartbeat_bad" class="icon ion-minus-circled" style="color:red;"></i>
+						Server Status
+					</li>
+					<li class="item item-icon-right">
+						<i id="ardubeat_good" class="icon ion-checkmark-circled" style="visibility:hidden;color:#11dd77;"></i>
+						<i id="ardubeat_bad" class="icon ion-minus-circled" style="color:red;"></i>
+						Arduino Status
+					</li>
 					<li class="item item-toggle">
 						Enable Blade
 						<label class="toggle toggle-assertive">
