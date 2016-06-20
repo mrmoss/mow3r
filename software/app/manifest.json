@@ -30,7 +30,7 @@
 	},
 	"icons":
 	{
-		"16":"images/moose-16.png",
-		"128":"images/moose-128.png"
+		"16":"img/moose-16.png",
+		"128":"img/moose-128.png"
 	}
 }

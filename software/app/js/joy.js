@@ -18,13 +18,13 @@ function joy_t(div)
 
 	this.bg=document.createElement("img");
 	this.el.appendChild(this.bg);
-	this.bg.src="images/joy_bg.png";
+	this.bg.src="img/joy_bg.png";
 	this.bg.style.margin=this.bg.style.padding="0px";
 	this.bg.style.width=this.bg.style.height=this.bg_size+"px";
 
 	this.hat=document.createElement("img");
 	this.el.appendChild(this.hat);
-	this.hat.src="images/joy_hat.png";
+	this.hat.src="img/joy_hat.png";
 	this.hat.style.visibility="hidden";
 	this.hat.style.margin=this.hat.style.padding="0px";
 	this.hat.style.width=this.hat.style.height=this.hat_size+"px";
