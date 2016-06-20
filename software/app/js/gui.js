@@ -74,7 +74,7 @@ function gui_t(div)
 	this.ui.log.readOnly=true;
 	this.ui.log.style.resize="none";
 	this.ui.log.style.width="100%";
-	this.ui.log.style.height="200px";
+	this.ui.log.style.height="100px";
 
 	this.ui.blade_en=document.getElementById("blade_en_cb");
 	this.ui.blade_run=document.getElementById("blade_run_cb");
