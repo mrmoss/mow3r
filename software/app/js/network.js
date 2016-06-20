@@ -81,16 +81,16 @@ network_t.prototype.create_cb_m=function(createInfo)
 		_this.error_check_m("mode",result);
 		chrome.sockets.udp.bind(_this.socket.socketId,"0.0.0.0",_this.rx,function(result)
 		{
-			_this.error_check_m("bind",result);
-			chrome.sockets.udp.setBroadcast(_this.socket.socketId,true,function(result)
-			{
-				_this.error_check_m("broadcast",result);
+			//_this.error_check_m("bind",result);
+			//chrome.sockets.udp.setBroadcast(_this.socket.socketId,true,function(result)
+			//{
+				//_this.error_check_m("broadcast",result);
 				chrome.sockets.udp.joinGroup(_this.socket.socketId,_this.group,function(result)
 				{
 					_this.error_check_m("join",result);
 					_this.connected=true;
 				});
-			});
+			//});
 		});
 	});
 }
@@ -123,7 +123,7 @@ network_t.prototype.error_check_m=function(state,result)
 {
 	if(!result)
 		result=0;
-	if(chrome.runtime.lastError&&this.onerror)
+	if(chrome&&chrome.runtime&&chrome.runtime.lastError&&this.onerror)
 		this.onerror(state+": "+chrome.runtime.lastError.message);
 	if(result<0&&this.onerror)
 		this.onerror(state+": Error code "+result);

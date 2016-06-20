@@ -20,7 +20,10 @@ function gui_t(div)
 		});
 	this.ui={};
 
-	this.ui.joy=new joy_t(this.el);
+	this.ui.center=document.createElement("center");
+	this.el.appendChild(this.ui.center);
+
+	this.ui.joy=new joy_t(this.ui.center);
 
 	this.ui.log=document.createElement("textarea");
 	this.el.appendChild(this.ui.log);

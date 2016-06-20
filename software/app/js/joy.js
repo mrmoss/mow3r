@@ -8,8 +8,8 @@ function joy_t(div)
 	this.div.appendChild(this.el);
 	this.el.style.margin=this.el.style.padding="0px";
 
-	this.bg_size=380/3;
-	this.hat_size=147/3;
+	this.bg_size=380/1.5;
+	this.hat_size=147/1.5;
 	this.dragging=false;
 	this.centered=true;
 	this.offset={x:0,y:0};
@@ -31,10 +31,14 @@ function joy_t(div)
 	this.hat.style.position="absolute";
 
 	var _this=this;
-	this.hat.onmousedown=function(event)
+	var down=function(event)
 	{
 		_this.dragging=true;
 		_this.centered=false;
+		if(!event.pageX)
+			event.pageX=event.touches[0].pageX;
+		if(!event.pageY)
+			event.pageY=event.touches[0].pageY;
 		_this.offset=
 		{
 			x:event.pageX-_this.el.offsetLeft-_this.bg_size/2,
@@ -42,19 +46,29 @@ function joy_t(div)
 		};
 		_this.move(event.pageX-_this.offset.x,event.pageY-_this.offset.y);
 	};
-	document.addEventListener("mousemove",function(event)
+	var move=function(event)
 	{
+		if(!event.pageX)
+			event.pageX=event.touches[0].pageX;
+		if(!event.pageY)
+			event.pageY=event.touches[0].pageY;
 		if(_this.dragging)
 		{
 			_this.centered=false;
 			_this.move(event.pageX-_this.offset.x,event.pageY-_this.offset.y);
 		}
-	});
-	document.addEventListener("mouseup",function()
+	};
+	var release=function()
 	{
 		_this.dragging=false;
 		_this.offset={x:0,y:0};
-	});
+	};
+	this.hat.addEventListener("mousedown",down);
+	this.hat.addEventListener("touchstart",down);
+	document.addEventListener("mousemove",move);
+	document.addEventListener("touchmove",move);
+	document.addEventListener("mouseup",release);
+	document.addEventListener("touchend",release);
 	setTimeout(function()
 	{
 		_this.move(_this.bg_size/2,_this.bg_size/2);
@@ -114,6 +128,6 @@ joy_t.prototype.move=function(x,y)
 	this.power={L:this.clamp_mag(pf+pt,100),R:this.clamp_mag(pf-pt,100)};
 	if(!this.centered&&this.power.L==0&&this.power.R==0)
 		this.centered=true;
-	this.hat.style.left=(this.bg_size-this.hat_size)/2+this.el.offsetLeft+x+"px";
-	this.hat.style.top=(this.bg_size-this.hat_size)/2+this.el.offsetTop+y+"px";
+	this.hat.style.left=(this.bg_size-this.hat_size)/2+this.bg.offsetLeft+x+"px";
+	this.hat.style.top=(this.bg_size-this.hat_size)/2+this.bg.offsetTop+y+"px";
 }
