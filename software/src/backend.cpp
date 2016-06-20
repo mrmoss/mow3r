@@ -57,8 +57,9 @@ void recv_cb(std::string data,bool auth)
 			json_t json(deserialize(data));
 			cmd.L=json["L"].asInt();
 			cmd.R=json["R"].asInt();
+			cmd.flags=json["flags"].asInt();
 			deadman_timer=msl::millis()+deadman_timeout;
-			std::cout<<"Data: "<<cmd.L<<","<<cmd.R<<std::endl;
+			std::cout<<"Data: "<<cmd.L<<","<<cmd.R<<","<<cmd.flags<<std::endl;
 		}
 		catch(...)
 		{

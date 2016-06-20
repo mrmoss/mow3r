@@ -10,11 +10,7 @@ function network_t(tx,rx,auth,onerror,onreceive)
 	this.connected=false;
 
 	if(!this.onerror)
-		this.onerror=function(error)
-		{
-			throw error;
-		};
-
+		this.onerror=function(error){throw error;};
 
 	this.socket=null;
 	this.group="224.0.0.1";

@@ -48,9 +48,9 @@ function joy_t(div)
 	};
 	var move=function(event)
 	{
-		if(!event.pageX)
+		if(!event.pageX&&event.touches)
 			event.pageX=event.touches[0].pageX;
-		if(!event.pageY)
+		if(!event.pageY&&event.touches)
 			event.pageY=event.touches[0].pageY;
 		if(_this.dragging)
 		{
