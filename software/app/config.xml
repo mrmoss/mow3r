@@ -4,8 +4,8 @@
   <description>
         An Ionic Framework and Cordova project.
     </description>
-  <author email="you@example.com" href="http://example.com.com/">
-      Your Name Here
+  <author email="mrmoss@alaska.edu" href="https://github.com/mrmoss/mow3r/">
+      Mike Moss
     </author>
   <content src="index.html"/>
   <access origin="*"/>

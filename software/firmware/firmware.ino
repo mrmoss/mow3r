@@ -9,6 +9,8 @@ motor_t lb(4,3);
 relay_t blade_enable(11);
 relay_t blade_spin(12);
 packet_parser_t packet_parser;
+uint32_t heartbeat_timeout=100;
+uint32_t heartbeat_timer=millis()+heartbeat_timeout;
 uint32_t deadman_timeout=500;
 uint32_t deadman_timer=millis()+deadman_timeout;
 
@@ -33,6 +35,11 @@ void setup()
 
 void loop()
 {
+    if(millis()>heartbeat_timer)
+    {
+        send_heartbeat();
+        heartbeat_timer=millis()+heartbeat_timeout;
+    }
     if(millis()>deadman_timer)
     {
         handle_cmd({0,0,0});

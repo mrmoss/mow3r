@@ -13,7 +13,8 @@
 #define PACKET_HEADER1		0x0f
 #define PACKET_NONE			0x00
 #define PACKET_CMD			0x01
-#define PACKET_DEBUG		0x02
+#define PACKET_HEARTBEAT    0x02
+#define PACKET_DEBUG		0x03
 
 #define FLAG_BLADE_ENABLE	0x01
 #define FLAG_BLADE_SPIN		0x02
@@ -63,6 +64,20 @@ std::string send_debug(std::string message)
 	}
 	return str;
 }
+#else
+void send_heartbeat()
+{
+	uint8_t packet[]=
+	{
+		PACKET_HEADER0,
+		PACKET_HEADER1,
+		PACKET_HEARTBEAT,
+		0,
+		0
+	};
+	packet[4]=calc_crc(packet,4);
+	Serial.write(packet,5);
+}
 #endif
 
 class packet_parser_t
@@ -104,7 +119,10 @@ class packet_parser_t
 			{
 				size_m=b;
 				data_m[3]=0;
-				state_m=DATA;
+				if(size_m==0)
+					state_m=CRC;
+				else
+					state_m=DATA;
 			}
 			else if(state_m==DATA)
 			{
@@ -146,6 +164,16 @@ class packet_parser_t
 			{
 				data_m[1]=PACKET_NONE;
 				debug=std::string((char*)(data_m+4),data_m[3]);
+				return true;
+			}
+			return false;
+		}
+		bool recv_heartbeat()
+		{
+			if(state_m==HEADER0&&data_m[0]==PACKET_HEADER0&&
+				data_m[1]==PACKET_HEADER1&&data_m[2]==PACKET_HEARTBEAT)
+			{
+				data_m[1]=PACKET_NONE;
 				return true;
 			}
 			return false;

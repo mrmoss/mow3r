@@ -14,9 +14,10 @@ packet_cmd_t cmd;
 packet_parser_t packet_parser;
 std::int64_t deadman_timeout=1000;
 std::int64_t deadman_timer=msl::millis()+deadman_timeout;
-std::int64_t heartbeat_timeout=250;
+std::int64_t heartbeat_timeout=200;
 std::int64_t heartbeat_timer=msl::millis()+heartbeat_timeout;
 json_t status;
+bool got_serial_heartbeat=false;
 
 void stop()
 {
@@ -36,7 +37,7 @@ void network_print(const std::string& str)
 	std::cout<<str<<std::endl;
 }
 
-void network_update(const bool serial_connected=false)
+void network_update()
 {
 	network.poll();
 	if(msl::millis()>deadman_timer&&!is_stopped())
@@ -50,8 +51,11 @@ void network_update(const bool serial_connected=false)
 		status["heartbeat"]=status["heartbeat"].asInt()+1;
 		if(status["heartbeat"].asInt()>255)
 			status["heartbeat"]=0;
-		if(serial_connected)
+		if(got_serial_heartbeat)
+		{
 			status["ardubeat"]=status["ardubeat"].asInt()+1;
+			got_serial_heartbeat=false;
+		}
 		if(status["ardubeat"].asInt()>255)
 			status["ardubeat"]=0;
 		heartbeat_timer=msl::millis()+heartbeat_timeout;
@@ -76,7 +80,6 @@ void recv_cb(std::string data,bool auth)
 			cmd.R=json["R"].asInt();
 			cmd.flags=json["flags"].asInt();
 			deadman_timer=msl::millis()+deadman_timeout;
-			//std::cout<<"Data: "<<cmd.L<<","<<cmd.R<<","<<cmd.flags<<std::endl;
 		}
 		catch(...)
 		{
@@ -125,7 +128,6 @@ int main()
 					}
 					while(serial.good())
 					{
-						network_update(true);
 						char temp;
 						while(serial.available()>0&&serial.read(&temp,1)==1)
 							if(packet_parser.parse(temp))
@@ -133,7 +135,10 @@ int main()
 								std::string debug;
 								if(packet_parser.recv_debug(debug))
 									std::cout<<"Debug: "+debug<<std::endl;
+								if(packet_parser.recv_heartbeat())
+									got_serial_heartbeat=true;
 							}
+						network_update();
 						serial.write(send_cmd(cmd));
 						msl::delay_ms(10);
 					}

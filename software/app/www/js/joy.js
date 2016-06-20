@@ -7,6 +7,7 @@ function joy_t(div)
 	this.el=document.createElement("div");
 	this.div.appendChild(this.el);
 	this.el.style.margin=this.el.style.padding="0px";
+	this.disabled=false;
 
 	this.bg_size=422/1.5;
 	this.hat_size=145/1.5;
@@ -93,6 +94,17 @@ function joy_t(div)
 				if(Math.abs(new_pos.y-_this.bg_size/2)<1)
 					new_pos.y=_this.bg_size/2;
 				_this.move(new_pos.x,new_pos.y);
+			}
+			if(_this.disabled)
+			{
+				_this.dragging=false;
+				_this.centered=true;
+				_this.move(_this.bg_size/2,_this.bg_size/2);
+				_this.hat.style.opacity=0.5;
+			}
+			else
+			{
+				_this.hat.style.opacity=1;
 			}
 		},10);
 }

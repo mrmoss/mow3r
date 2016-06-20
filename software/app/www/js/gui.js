@@ -37,18 +37,21 @@ function gui_t(div)
 	this.el.appendChild(this.ui.center);
 
 	this.ui.joy=new joy_t(this.ui.center);
+	this.ui.joy.disabled=true;
 
 	this.ui.heartbeat=
 	{
 		good:document.getElementById("heartbeat_good"),
 		bad:document.getElementById("heartbeat_bad"),
-		beat:0
+		count:-1,
+		connected:false
 	};
 	this.ui.ardubeat=
 	{
 		good:document.getElementById("ardubeat_good"),
 		bad:document.getElementById("ardubeat_bad"),
-		beat:0
+		count:-1,
+		connected:false
 	};
 
 	this.ui.blade_en=document.getElementById("blade_en_cb");
@@ -73,7 +76,7 @@ function gui_t(div)
 	{
 		_this.set_beat(_this.ui.heartbeat,_this.status.heartbeat);
 		_this.set_beat(_this.ui.ardubeat,_this.status.ardubeat);
-	},600);
+	},1500);
 }
 
 gui_t.prototype.destroy=function()
@@ -105,21 +108,34 @@ gui_t.prototype.pilot=function()
 		pilot.flags+=1;
 	if(this.ui.blade_run&&this.ui.blade_run.checked)
 		pilot.flags+=2;
-	this.network.send(JSON.stringify(pilot));
+	if(this.ui.heartbeat.connected&&this.ui.ardubeat.connected)
+		this.network.send(JSON.stringify(pilot));
 }
 
-gui_t.prototype.set_beat=function(beat,new_beat)
+gui_t.prototype.set_beat=function(beat,new_count)
 {
 	if(beat)
 	{
-		if(beat.beat!=new_beat)
+		var old_count=beat.count;
+		beat.connected=(new_count!=beat.count);
+		beat.count=new_count;
+		if(old_count!=-1)
+			this.update_beat_ui(beat);
+	}
+}
+
+gui_t.prototype.update_beat_ui=function(beat)
+{
+	if(beat)
+	{
+		if(beat.connected)
 		{
-			beat.beat=new_beat;
 			if(beat.bad)
 				beat.bad.style.visibility="hidden";
 			if(beat.good)
 				beat.good.style.visibility="visible";
 			this.ui.blade_en.disabled=false;
+			this.ui.joy.disabled=false;
 		}
 		else
 		{
@@ -131,6 +147,7 @@ gui_t.prototype.set_beat=function(beat,new_beat)
 			this.ui.blade_en.disabled=true;
 			this.ui.blade_run.checked=false;
 			this.ui.blade_run.disabled=true;
+			this.ui.joy.disabled=true;
 		}
 
 	}
