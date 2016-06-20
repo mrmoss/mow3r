@@ -63,12 +63,17 @@ function joy_t(div)
 		_this.dragging=false;
 		_this.offset={x:0,y:0};
 	};
+
 	this.hat.addEventListener("mousedown",down);
 	this.hat.addEventListener("touchstart",down);
 	document.addEventListener("mousemove",move);
 	document.addEventListener("touchmove",move);
 	document.addEventListener("mouseup",release);
 	document.addEventListener("touchend",release);
+	window.addEventListener("resize",function()
+	{
+		_this.move(_this.bg_size/2,_this.bg_size/2);
+	});
 	setTimeout(function()
 	{
 		_this.move(_this.bg_size/2,_this.bg_size/2);

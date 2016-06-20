@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+		<title></title>
+		<link href="lib/ionic/css/ionic.css" rel="stylesheet">
+		<link href="css/style.css" rel="stylesheet">
+		<script src="lib/ionic/js/ionic.bundle.js"></script>
+		<script src="cordova.js"></script>
+		<script src="js/cryptojs/hmac-sha256.js"></script>
+		<script src="js/gui.js"></script>
+		<script src="js/joy.js"></script>
+		<script src="js/network.js"></script>
+		<!--CALL THIS LAST-->
+		<script src="js/app.js"></script>
+	</head>
+	<body ng-app="starter">
+		<ion-pane>
+			<ion-header-bar class="bar-stable">
+				<h1 class="title">mow3r</h1>
+			</ion-header-bar>
+			<ion-content has-bouncing="false">
+				<div id="content"></div>
+				<div class="list">
+					<a class="item item-icon-right" style="pointer-events:none;">
+						<i id="heartbeat_good" class="icon ion-happy" style="visibility:hidden;color:#11dd77;"></i>
+						<i id="heartbeat_bad" class="icon ion-sad" style="color:red;"></i>
+						Server Connection
+					</a>
+					<a class="item item-icon-right" style="pointer-events:none;">
+						<i id="ardubeat_good" class="icon ion-happy" style="visibility:hidden;color:#11dd77;"></i>
+						<i id="ardubeat_bad" class="icon ion-sad" style="color:red;"></i>
+						Arduino Connection
+					</a>
+				</div>
+				<ul class="list">
+					<li class="item item-toggle">
+						Enable Blade
+						<label class="toggle toggle-assertive">
+							<input id="blade_en_cb" type="checkbox"/>
+							<div class="track"><div class="handle"></div></div>
+						</label>
+					</li>
+					<li class="item item-toggle">
+						Run Blade
+						<label class="toggle toggle-assertive">
+							<input id="blade_run_cb" type="checkbox" disabled/>
+							<div class="track"><div class="handle"></div></div>
+						</label>
+					</li>
+				</ul>
+			</ion-content>
+		</ion-pane>
+	</body>
+</html>

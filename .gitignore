@@ -1,2 +1,5 @@
-software/bin/backend
-software/bin/backend.exe
+software/backend/bin/backend
+software/backend/bin/backend.exe
+software/app/node_modules/
+software/app/plugins/
+software/app/platforms/
