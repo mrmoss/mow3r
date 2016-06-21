@@ -14,7 +14,7 @@ packet_cmd_t cmd;
 packet_parser_t packet_parser;
 std::int64_t deadman_timeout=1000;
 std::int64_t deadman_timer=msl::millis()+deadman_timeout;
-std::int64_t heartbeat_timeout=200;
+std::int64_t heartbeat_timeout=100;
 std::int64_t heartbeat_timer=msl::millis()+heartbeat_timeout;
 json_t status;
 bool got_serial_heartbeat=false;

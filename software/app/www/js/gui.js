@@ -76,7 +76,7 @@ function gui_t(div)
 	{
 		_this.set_beat(_this.ui.heartbeat,_this.status.heartbeat);
 		_this.set_beat(_this.ui.ardubeat,_this.status.ardubeat);
-	},1500);
+	},600);
 }
 
 gui_t.prototype.destroy=function()

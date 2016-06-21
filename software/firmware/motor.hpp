@@ -9,6 +9,8 @@ class motor_t
         {
             pinMode(dir_pin_m,OUTPUT);
             pinMode(pwm_pin_m,OUTPUT);
+            digitalWrite(dir_pin_m,LOW);
+            digitalWrite(pwm_pin_m,LOW);
             stop();
         }
 
