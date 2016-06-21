@@ -8,7 +8,7 @@ function onlaunch()
 		'innerBounds':
 		{
 			'width':width,'height':height,
-		//	'maxWidth':width,'maxHeight':height,
+			'maxWidth':width,'maxHeight':height,
 			'minWidth':width,'minHeight':height
 		},
 		id:'main'
