@@ -1,0 +1,1 @@
+//Empty file to make html same in ionic and chrome.

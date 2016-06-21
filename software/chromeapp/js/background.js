@@ -1,7 +1,7 @@
 function onlaunch()
 {
 	var width=600;
-	var height=400;
+	var height=600;
 
 	chrome.app.window.create('/window.html',
 	{
@@ -12,12 +12,6 @@ function onlaunch()
 			'minWidth':width,'minHeight':height
 		},
 		id:'main'
-	});
-
-	chrome.sockets.udp.getSockets(function(socketInfos)
-	{
-		for(var key in socketInfos)
-			chrome.sockets.udp.close(socketInfos[key].socketId);
 	});
 }
 

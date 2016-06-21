@@ -19,12 +19,14 @@
 		{
 			"scripts":
 			[
+				"cordova.js",
+				"js/app.js",
 				"js/background.js",
 				"js/cryptojs/hmac-sha256.js",
 				"js/gui.js",
 				"js/joy.js",
 				"js/network.js",
-				"js/window.js"
+				"lib/ionic/js/ionic.bundle.js"
 			]
 		}
 	},
