@@ -2,12 +2,12 @@
 #include "packet.hpp"
 #include "relay.hpp"
 
-motor_t rf(8,7);
-motor_t rb(10,9);
-motor_t lf(6,5);
-motor_t lb(4,3);
-relay_t blade_enable(11);
-relay_t blade_spin(12);
+motor_t lf(12,11);
+motor_t lb(10,9);
+motor_t rf(6,5);
+motor_t rb(8,7);
+relay_t blade_enable(A0);
+relay_t blade_spin(A1);
 packet_parser_t packet_parser;
 uint32_t heartbeat_timeout=100;
 uint32_t heartbeat_timer=millis()+heartbeat_timeout;
