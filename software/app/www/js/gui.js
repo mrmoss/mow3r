@@ -27,16 +27,14 @@ function gui_t(div)
 						_this.status.heartbeat=data.heartbeat;
 					if(data.ardubeat)
 						_this.status.ardubeat=data.ardubeat;
+					_this.set_authed(true);
 				}
 				catch(error)
 				{}
-				_this.auth_good.style.visibility="visible";
-				_this.auth_bad.style.visibility="hidden";
 				return;
 			}
 			console.log("Authentication mismatch.");
-			_this.auth_good.style.visibility="hidden";
-			_this.auth_bad.style.visibility="visible";
+			_this.set_authed(false);
 		});
 
 	this.ui={};
@@ -156,7 +154,23 @@ gui_t.prototype.update_beat_ui=function(beat)
 			this.ui.blade_run.checked=false;
 			this.ui.blade_run.disabled=true;
 			this.ui.joy.disabled=true;
+			if(!this.ui.heartbeat.connected)
+				this.set_authed(false);
 		}
 
+	}
+}
+
+gui_t.prototype.set_authed=function(authed)
+{
+	if(authed)
+	{
+		this.auth_good.style.visibility="visible";
+		this.auth_bad.style.visibility="hidden";
+	}
+	else
+	{
+		this.auth_good.style.visibility="hidden";
+		this.auth_bad.style.visibility="visible";
 	}
 }

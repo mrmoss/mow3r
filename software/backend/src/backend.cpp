@@ -22,6 +22,22 @@ std::int64_t heartbeat_timeout=100;
 std::int64_t heartbeat_timer=msl::millis()+heartbeat_timeout;
 json_t status;
 bool got_serial_heartbeat=false;
+size_t last_print_times=0;
+std::string last_print;
+
+void smart_print(const std::string& str,bool ignore_times=false)
+{
+	if(last_print!=str)
+	{
+		last_print_times=0;
+		last_print=str;
+		std::cout<<std::endl;
+	}
+	std::cout<<"\r"<<str<<std::flush;
+	if(!ignore_times&&last_print_times>0)
+		std::cout<<" ("<<last_print_times<<")"<<std::flush;
+	++last_print_times;
+}
 
 void stop()
 {
@@ -38,7 +54,7 @@ void network_print(const std::string& str)
 	json_t json;
 	json["debug"]=str;
 	network.send(serialize(json));
-	std::cout<<str<<std::endl;
+	smart_print(str);
 }
 
 void network_update()
@@ -48,7 +64,7 @@ void network_update()
 	{
 		stop();
 		deadman_timer=msl::millis()+deadman_timeout;
-		std::cout<<"Stopping."<<std::endl;
+		smart_print("Stopping.");
 	}
 	if(msl::millis()>=heartbeat_timer)
 	{
@@ -87,12 +103,13 @@ void recv_cb(std::string data,bool auth)
 		}
 		catch(...)
 		{
-			std::cout<<"Invalid serial object \""<<data<<"\"."<<std::endl;
+			smart_print("Invalid serial object \""+data+"\".");
 		}
+		smart_print("Pilot connected.");
 	}
 	else
 	{
-		std::cout<<"Authentication mismatch for \""<<data<<"\"."<<std::endl;
+		smart_print("Authentication mismatch for \""+data+"\".");
 	}
 }
 
@@ -108,8 +125,8 @@ int main()
 			throw std::runtime_error("Error creating outbound frontend connection.");
 		if(status==network_t::BAD_BIND)
 			throw std::runtime_error("Error creating inbound frontend connection.");
-		std::cout<<"Frontend started."<<std::endl;
-		std::cout<<"Pin: "<<pin<<std::endl;
+		smart_print("Frontend started.");
+		smart_print("Pin: "+pin);
 		while(true)
 		{
 			auto serials=msl::serial_t::list();
@@ -124,11 +141,11 @@ int main()
 					network_delay(2000);
 					if(!serial.good())
 					{
-						std::cout<<"Error opening serial on \""+ii+"\"."<<std::endl;
+						smart_print("Error opening serial on \""+ii+"\".");
 					}
 					else
 					{
-						std::cout<<"Serial opened on \""+ii+"\"."<<std::endl;
+						smart_print("Serial opened on \""+ii+"\".");
 						serial.write(send_cmd(cmd));
 					}
 					while(serial.good())
@@ -139,7 +156,7 @@ int main()
 							{
 								std::string debug;
 								if(packet_parser.recv_debug(debug))
-									std::cout<<"Debug: "+debug<<std::endl;
+									smart_print("Debug: "+debug);
 								if(packet_parser.recv_heartbeat())
 									got_serial_heartbeat=true;
 							}
@@ -147,24 +164,24 @@ int main()
 						serial.write(send_cmd(cmd));
 						msl::delay_ms(10);
 					}
-					std::cout<<"Serial disconnected."<<std::endl;
+					smart_print("Serial disconnected.");
 					break;
 				}
 			}
 			if(!found)
-				std::cout<<"Serial disconnected."<<std::endl;
+				smart_print("Serial disconnected.");
 			network_delay(1000);
 		}
 		network.free();
 	}
 	catch(std::exception& error)
 	{
-		std::cout<<error.what()<<std::endl;
+		smart_print(error.what());
 		return 1;
 	}
 	catch(...)
 	{
-		std::cout<<"Unexpected error."<<std::endl;
+		smart_print("Unexpected error.");
 		return 1;
 	}
 	return 0;
