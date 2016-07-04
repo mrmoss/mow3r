@@ -1,22 +1,13 @@
 #include "network.hpp"
 #include <msl/crypto.hpp>
-#include <iomanip>
-#include <sstream>
-
-static std::string to_hex_string(const std::string& str)
-{
-	std::ostringstream ostr;
-	for(auto ii:str)
-		ostr<<std::hex<<std::setw(2)<<std::setfill('0')<<((int)ii&0x000000ff);
-	return ostr.str();
-}
+#include <msl/string.hpp>
 
 void network_t_tx_handler(mg_connection* conn,int ev,void* p)
 {
 	network_t& network(*(network_t*)(conn->mgr->user_data));
 	for(auto data:network.tx_data_m)
 	{
-		data=to_hex_string(msl::hmac_sha256(network.auth_m,data))+data;
+		data=msl::to_hex_string(msl::hmac_sha256(network.auth_m,data))+data;
 		mg_send(conn,data.c_str(),data.size());
 	}
 	network.tx_data_m.clear();
@@ -34,7 +25,7 @@ void network_t_rx_handler(mg_connection* conn,int ev,void* p)
 		{
 			std::string hash=data.substr(0,64);
 			data=data.substr(64,data.size()-64);
-			auth=(to_hex_string(msl::hmac_sha256(network.auth_m,data))==hash);
+			auth=(msl::to_hex_string(msl::hmac_sha256(network.auth_m,data))==hash);
 		}
 		network.recv_cb_m(data,auth);
 		mbuf_remove(io,io->len);

@@ -3,13 +3,17 @@
 #include "network.hpp"
 #include <cstdint>
 #include <iostream>
+#include <msl/crypto.hpp>
 #include <msl/serial.hpp>
+#include <msl/string.hpp>
 #include <msl/time.hpp>
 #include <stdexcept>
 #include <string>
 
 void recv_cb(std::string data,bool auth);
-network_t network("udp://224.0.0.1:8081","udp://:8080","auth123",recv_cb);
+std::string pin=msl::to_hex_string(
+	msl::hash_sha256(msl::crypto_rand(8))).substr(0,8);
+network_t network("udp://224.0.0.1:8081","udp://:8080",pin,recv_cb);
 packet_cmd_t cmd;
 packet_parser_t packet_parser;
 std::int64_t deadman_timeout=1000;
@@ -105,6 +109,7 @@ int main()
 		if(status==network_t::BAD_BIND)
 			throw std::runtime_error("Error creating inbound frontend connection.");
 		std::cout<<"Frontend started."<<std::endl;
+		std::cout<<"Pin: "<<pin<<std::endl;
 		while(true)
 		{
 			auto serials=msl::serial_t::list();

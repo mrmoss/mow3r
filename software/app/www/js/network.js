@@ -13,7 +13,7 @@ function network_t(tx,rx,auth,onerror,onreceive)
 		this.onerror=function(error){throw error;};
 
 	this.socket=null;
-	this.group="224.0.0.1";
+	this.group="224.0.0.1";;
 	var _this=this;
 	chrome.sockets.udp.create({persistent:true},function(createInfo)
 	{

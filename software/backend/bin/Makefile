@@ -6,7 +6,7 @@ LIB=-lcrypto
 
 JSONCPP=$(INC)/jsoncpp/json_reader.cpp $(INC)/jsoncpp/json_value.cpp $(INC)/jsoncpp/json_writer.cpp
 MONGOOSE=$(INC)/mongoose/mongoose.c
-MSL=$(INC)/msl/crypto.cpp $(INC)/msl/serial.cpp $(INC)/msl/time.cpp
+MSL=$(INC)/msl/crypto.cpp $(INC)/msl/serial.cpp $(INC)/msl/string.cpp $(INC)/msl/time.cpp
 
 ifeq ($(OS),Windows_NT)
 	LIB+=-lWs2_32 -lgdi32

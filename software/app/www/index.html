@@ -21,6 +21,15 @@
 			</ion-header-bar>
 			<ion-content has-bouncing="false">
 				<ul class="list">
+					<li class="item item-input-inset">
+						<label class="item-input-wrapper">
+							<input id="auth_input" type="password" placeholder="Pin"></input>
+						</label>
+						<div class="item-icon-right">
+							<i id="auth_good" class="icon ion-checkmark-circled" style="visibility:hidden;color:#11dd77;"></i>
+							<i id="auth_bad" class="icon ion-android-alert" style="color:red;"></i>
+						</div>
+					</li>
 					<li class="item item-icon-right">
 						<i id="heartbeat_good" class="icon ion-checkmark-circled" style="visibility:hidden;color:#11dd77;"></i>
 						<i id="heartbeat_bad" class="icon ion-android-alert" style="color:red;"></i>
@@ -31,6 +40,7 @@
 						<i id="ardubeat_bad" class="icon ion-android-alert" style="color:red;"></i>
 						Arduino Status
 					</li>
+
 				</ul>
 				<div id="content"></div>
 				<ul class="list">

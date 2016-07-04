@@ -9,8 +9,12 @@ function gui_t(div)
 
 	var _this=this;
 	this.status={heartbeat:0,ardubeat:0};
+	this.auth_input=document.getElementById("auth_input");
+	this.auth_input.onchange=function(){_this.network.auth=this.value;};
+	this.auth_good=document.getElementById("auth_good");
+	this.auth_bad=document.getElementById("auth_bad");
 
-	this.network=new network_t(8080,8081,"auth123",
+	this.network=new network_t(8080,8081,this.auth_input.value,
 		function(error){_this.error(error);},
 		function(data,auth)
 		{
@@ -26,9 +30,13 @@ function gui_t(div)
 				}
 				catch(error)
 				{}
+				_this.auth_good.style.visibility="visible";
+				_this.auth_bad.style.visibility="hidden";
 				return;
 			}
-			_this.log("Authentication mismatch.");
+			console.log("Authentication mismatch.");
+			_this.auth_good.style.visibility="hidden";
+			_this.auth_bad.style.visibility="visible";
 		});
 
 	this.ui={};
