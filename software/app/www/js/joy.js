@@ -9,8 +9,8 @@ function joy_t(div)
 	this.el.style.margin=this.el.style.padding="0px";
 	this.disabled=false;
 
-	this.bg_size=422/1.5;
-	this.hat_size=145/1.5;
+	this.bg_size=422/1.75;
+	this.hat_size=145/1.75;
 	this.dragging=false;
 	this.centered=true;
 	this.offset={x:0,y:0};

@@ -1,7 +1,7 @@
 function onlaunch()
 {
 	var width=480;
-	var height=650;
+	var height=640;
 
 	chrome.app.window.create('/window.html',
 	{
