@@ -30,7 +30,7 @@ class motor_t
             if(!dir)
                 forward=!forward;
             digitalWrite(dir_pin_m,forward);
-            analogWrite(pwm_pin_m,speed);
+            analogWrite(pwm_pin_m,speed/100.0*255);
         }
 
         void stop()
