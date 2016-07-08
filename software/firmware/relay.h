@@ -1,6 +1,8 @@
 #ifndef RELAY_HPP
 #define RELAY_HPP
 
+#include <Arduino.h>
+
 class relay_t
 {
     public:

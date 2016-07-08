@@ -1,6 +1,8 @@
 #ifndef MOTOR_HPP
 #define MOTOR_HPP
 
+#include <Arduino.h>
+
 class motor_t
 {
     public:

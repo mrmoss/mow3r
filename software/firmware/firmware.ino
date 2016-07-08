@@ -1,6 +1,6 @@
-#include "motor.hpp"
-#include "packet.hpp"
-#include "relay.hpp"
+#include "motor.h"
+#include "packet.h"
+#include "relay.h"
 
 motor_t lf(12,11);
 motor_t lb(10,9);
