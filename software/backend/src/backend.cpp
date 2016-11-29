@@ -1,4 +1,4 @@
-#include "../../firmware/packet.hpp"
+#include "../../firmware/packet.h"
 #include "json.hpp"
 #include "network.hpp"
 #include <cstdint>
